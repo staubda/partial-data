@@ -35,7 +35,7 @@ def create_label_map_pbtxt(label_map, output_path):
         Filepath to write the pbtxt file.
     """
     label_map_strs = [
-        f"item {{\n  id: {label['id']}\n  name: {label['name']}\n  display_name: {label['display_name']}\n}}"
+        f"item {{\n  id: {label['id']}\n  name: '{label['name']}'\n  display_name: '{label['display_name']}'\n}}"
         for label in label_map
     ]
     label_map_str = '\n\n'.join(label_map_strs)
