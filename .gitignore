@@ -5,3 +5,5 @@
 **/__pycache__
 **/*.pyc
 **/train
+**/inference_graph
+**/test

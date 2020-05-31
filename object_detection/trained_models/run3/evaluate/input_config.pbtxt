@@ -1,0 +1,4 @@
+
+label_map_path: '../../datasets/partial_v1/tfrecord/label_map.pbtxt'
+tf_record_input_reader: { input_path: './test/test_detections.tfrecord@1' }
+

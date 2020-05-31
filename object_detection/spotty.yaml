@@ -6,6 +6,7 @@ project:
         - .git/*
         - '*/__pycache__/*'
         - .ipynb_checkpoints/*
+        - trained_models/*/train/*
 
 container:
   projectDir: /workspace/project/
