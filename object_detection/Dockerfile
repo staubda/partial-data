@@ -20,7 +20,8 @@ RUN pip install \
     pillow \
     lxml \
     jupyter \
-    matplotlib
+    matplotlib \
+    tf_slim
 
 # Install research repo python deps that depend on the previous deps being installed
 RUN pip install pycocotools

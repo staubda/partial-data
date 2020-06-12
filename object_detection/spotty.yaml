@@ -5,8 +5,12 @@ project:
         - .idea/*
         - .git/*
         - '*/__pycache__/*'
-        - .ipynb_checkpoints/*
+        - '*/.ipynb_checkpoints/*'
         - trained_models/*/train/*
+        - trained_models/*/inference_graph/*
+        - trained_models/*/test/*
+        - trained_models/*/evaluate/*
+        - datasets/*/annotations/*
 
 container:
   projectDir: /workspace/project/
@@ -17,7 +21,7 @@ container:
       mountPath: /workspace
 
 instances:
-  - name: inst1
+  - name: inst2
     provider: aws
     parameters:
       region: us-west-2
@@ -27,12 +31,12 @@ instances:
         - name: workspace
           parameters:
             size: 50
-            deletionPolicy: create_snapshot
+            deletionPolicy: delete
         - name: docker
           parameters:
-            size: 10
+            size: 20
             mountDir: /docker
-            deletionPolicy: retain
+            deletionPolicy: delete
 
 scripts:
   preprocess: |
