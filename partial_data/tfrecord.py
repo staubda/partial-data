@@ -138,8 +138,9 @@ def encode_object_detection_tf_example(example):
     ymaxs = example['hmax']
     classes_text = example['category_name']
     classes = example['category_id']
+    class_mask = example.get('cats_mask', None)
 
-    # load image
+    # Load image
     with GFile(image_filepath, 'rb') as fp:
         encoded_img = fp.read()
     encoded_img_io = io.BytesIO(encoded_img)
@@ -151,7 +152,7 @@ def encode_object_detection_tf_example(example):
     filename = os.path.split(image_filepath)[-1]
     image_format = img.format
 
-    tf_example = tf.train.Example(features=tf.train.Features(feature={
+    features = {
         'image/height': int64_feature(height),
         'image/width': int64_feature(width),
         'image/filename': bytes_feature(filename.encode('utf8')),
@@ -165,7 +166,11 @@ def encode_object_detection_tf_example(example):
         'image/object/bbox/ymax': float_list_feature(ymaxs),
         'image/object/class/text': bytes_list_feature([txt.encode('utf8') for txt in classes_text]),
         'image/object/class/label': int64_list_feature(classes),
-    }))
+    }
+    if class_mask is not None:
+        features['image/class_mask'] = int64_list_feature(class_mask)
+
+    tf_example = tf.train.Example(features=tf.train.Features(feature=features))
 
     return tf_example
 
@@ -179,6 +184,7 @@ def decode_object_detection_tf_example(example_proto):
         'image/key/sha256': FixedLenFeature([], tf.string),
         'image/encoded': FixedLenFeature([], tf.string),
         'image/format': FixedLenFeature([], tf.string),
+        'image/class_mask': VarLenFeature(tf.int64),
         'image/object/bbox/xmin': VarLenFeature(tf.float32),
         'image/object/bbox/ymin': VarLenFeature(tf.float32),
         'image/object/bbox/xmax': VarLenFeature(tf.float32),
@@ -197,6 +203,7 @@ def decode_object_detection_tf_example(example_proto):
         'key': example['image/key/sha256'],
         'image_bytes': example['image/encoded'],
         'image_filetype': example['image/format'],
+        'class_mask': example['image/class_mask'].values,
         'wmin': example['image/object/bbox/xmin'].values,
         'hmin': example['image/object/bbox/ymin'].values,
         'wmax': example['image/object/bbox/xmax'].values,
@@ -244,6 +251,20 @@ def write_examples_as_tfrecord(examples, output_filebase, example_encoder, num_s
 
 
 def read_examples_from_tfrecord(tfrecord_filepath, example_decoder):
+    """Load examples from a TFRecord file into memory.
+
+    Examples are loaded as as list of dicts.
+
+    Note: Adapted from https://github.com/tensorflow/models/blob/master/research/
+        object_detection/g3doc/using_your_own_dataset.md
+
+    Parameters
+    ----------
+    tfrecord_filepath: str
+        A filepath where a serialized TFRecord is stored.
+    example_decoder: func
+        A function that decodes a serialized tf.Example.
+    """
     dataset = TFRecordDataset(tfrecord_filepath)
     dataset = dataset.map(example_decoder).make_one_shot_iterator()
     example = dataset.get_next()
