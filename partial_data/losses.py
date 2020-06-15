@@ -4,7 +4,7 @@
 import tensorflow as tf
 
 from object_detection.utils import ops
-from object_detection import losses
+from object_detection.core import losses
 
 
 class WeightedSigmoidClassificationLoss(losses.Loss):

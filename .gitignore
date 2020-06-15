@@ -8,3 +8,5 @@
 **/train
 **/inference_graph
 **/test
+.python-version
+partial_data.egg-info
