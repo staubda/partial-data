@@ -138,7 +138,8 @@ def encode_object_detection_tf_example(example):
     ymaxs = example['hmax']
     classes_text = example['category_name']
     classes = example['category_id']
-    class_mask = example.get('cats_mask', None)
+    # class_mask = example.get('cats_mask', None)
+    class_ids_labeled = example.get('labeled_cat_ids', None)
 
     # Load image
     with GFile(image_filepath, 'rb') as fp:
@@ -167,8 +168,10 @@ def encode_object_detection_tf_example(example):
         'image/object/class/text': bytes_list_feature([txt.encode('utf8') for txt in classes_text]),
         'image/object/class/label': int64_list_feature(classes),
     }
-    if class_mask is not None:
-        features['image/class_mask'] = int64_list_feature(class_mask)
+    # if class_mask is not None:
+    #     features['image/class_mask'] = int64_list_feature(class_mask)
+    if class_ids_labeled is not None:
+        features['image/class/labeled_classes'] = int64_list_feature(class_ids_labeled)
 
     tf_example = tf.train.Example(features=tf.train.Features(feature=features))
 
@@ -184,7 +187,8 @@ def decode_object_detection_tf_example(example_proto):
         'image/key/sha256': FixedLenFeature([], tf.string),
         'image/encoded': FixedLenFeature([], tf.string),
         'image/format': FixedLenFeature([], tf.string),
-        'image/class_mask': VarLenFeature(tf.int64),
+        # 'image/class_mask': VarLenFeature(tf.int64),
+        'image/class/labeled_classes': VarLenFeature(tf.int64),
         'image/object/bbox/xmin': VarLenFeature(tf.float32),
         'image/object/bbox/ymin': VarLenFeature(tf.float32),
         'image/object/bbox/xmax': VarLenFeature(tf.float32),
@@ -203,7 +207,7 @@ def decode_object_detection_tf_example(example_proto):
         'key': example['image/key/sha256'],
         'image_bytes': example['image/encoded'],
         'image_filetype': example['image/format'],
-        'class_mask': example['image/class_mask'].values,
+        'labeled_classes': example['image/class/labeled_classes'].values,
         'wmin': example['image/object/bbox/xmin'].values,
         'hmin': example['image/object/bbox/ymin'].values,
         'wmax': example['image/object/bbox/xmax'].values,
