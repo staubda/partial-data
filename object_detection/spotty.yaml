@@ -11,6 +11,8 @@ project:
         - trained_models/*/test/*
         - trained_models/*/evaluate/*
         - datasets/*/annotations/*
+        - datasets/partial_v1/*
+        - datasets/partial_v2/*
 
 container:
   projectDir: /workspace/project/

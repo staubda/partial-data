@@ -3,7 +3,7 @@ FROM tensorflow/tensorflow:1.14.0-gpu-py3-jupyter
 RUN apt-get update && apt-get install -y git protobuf-compiler
 
 # Download object detection research repo and set it up
-RUN git clone https://github.com/tensorflow/models.git
+RUN git clone -b object_detection_partial_data --single-branch https://github.com/staubda/models.git
 ARG research_dir=/tf/models/research
 WORKDIR $research_dir
 RUN protoc object_detection/protos/*.proto --python_out=.
