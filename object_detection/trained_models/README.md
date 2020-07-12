@@ -105,7 +105,7 @@ Experiment Log
     - Default config
     - Run on p2.xlarge AWS spot instance
         - Completed in ~ 3 days, ~ 1 step/sec
-    - Loss decreased the whole way
+    - Loss decreased until step 120k
 - Eval
     - mAP COCO metrics
 - Results
