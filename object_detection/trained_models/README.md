@@ -90,3 +90,23 @@ Experiment Log
     - mAP COCO metrics
 - Results
     - mAP@0.5 = 0.251
+
+**Run 6**
+- Model
+    - SSD + Mobilenet-v1
+- Dataset
+    - COCO val with 7 categories
+    - Partial labels
+    - Increased dataset size compared to run2,3
+    - Decreased label overlap between artificial sub-datasets compared to run2,3
+- Training
+    - Updated loss to support per-example partial label masks. 
+    - 200k steps
+    - Default config
+    - Run on p2.xlarge AWS spot instance
+        - Completed in ~ 3 days, ~ 1 step/sec
+    - Loss decreased the whole way
+- Eval
+    - mAP COCO metrics
+- Results
+    - mAP@0.5 = 0.201
