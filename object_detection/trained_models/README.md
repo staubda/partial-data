@@ -70,7 +70,7 @@ Experiment Log
 - Eval
     - mAP COCO metrics
 - Results
-    - mAP@0.5 = 0.190
+    - mAP@0.5 = 0.196
 
 **Run 5**
 - Model
